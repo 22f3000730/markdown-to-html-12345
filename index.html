@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to HTML Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        #markdown-output {
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Markdown to HTML Converter</h1>
+    <div id="markdown-output"></div>
+
+    <script>
+        // Decode base64 markdown content
+        const markdownBase64 = "IyBQcm9qZWN0IE92ZXJ2aWV3CgpUaGlzIGlzIGEgKipzYW1wbGUgTWFya2Rvd24gZmlsZSoqIHRvIHRlc3QgTWFya2Rvd24tdG8tSFRNTCBjb252ZXJzaW9uLiAgCkl0IGluY2x1ZGVzIG11bHRpcGxlIE1hcmtkb3duIGZlYXR1cmVzIGZvciB0aG9yb3VnaCB0ZXN0aW5nLgoKIyMgRmVhdHVyZXMKCi0gSGVhZGluZ3MgKGAjYCwgYCMjYCwgYCMjI2ApCi0gT3JkZXJlZCBhbmQgdW5vcmRlcmVkIGxpc3RzCi0gTGlua3MgYW5kIGltYWdlcwotIElubGluZSBjb2RlIGFuZCBjb2RlIGJsb2NrcwotIFRhYmxlcyBhbmQgYmxvY2txdW90ZXMKCi0tLQoKIyMgTGlua3MgJiBJbWFnZXMKCi0gTGluayB0byBbT3BlbkFJXShodHRwczovL29wZW5haS5jb20pCi0gSW1hZ2UgZXhhbXBsZToKCiFbU2FtcGxlIEltYWdlXShodHRwczovL3ZpYS5wbGFjZWhvbGRlci5jb20vMTUwKQoKLS0tCgojIyBDb2RlIEV4YW1wbGUgKFB5dGhvbikKCmBgYHB5dGhvbgpkZWYgZmlib25hY2NpKG4pOgogICAgYSwgYiA9IDAsIDEKICAgIHJlc3VsdCA9IFtdCiAgICBmb3IgXyBpbiByYW5nZShuKToKICAgICAgICByZXN1bHQuYXBwZW5kKGEpCiAgICAgICAgYSwgYiA9IGIsIGEgKyBiCiAgICByZXR1cm4gcmVzdWx0CgpwcmludChmaWJvbmFjY2koMTApKQpgYGA=";
+        
+        // Function to decode base64
+        function decodeBase64(base64) {
+            const binaryString = atob(base64);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return new TextDecoder().decode(bytes);
+        }
+        
+        // Get markdown content
+        const markdownContent = decodeBase64(markdownBase64);
+        
+        // Configure marked options
+        marked.setOptions({
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                } else {
+                    return hljs.highlightAuto(code).value;
+                }
+            }
+        });
+        
+        // Convert markdown to HTML and render
+        document.addEventListener('DOMContentLoaded', function() {
+            const output = document.getElementById('markdown-output');
+            output.innerHTML = marked.parse(markdownContent);
+            
+            // Initialize highlight.js on all code blocks
+            hljs.highlightAll();
+        });
+    </script>
+</body>
+</html>
